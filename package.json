@@ -1,0 +1,22 @@
+{
+  "name": "command-line",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bin": {
+    "createnodeapp": "./bin/commands/create-node-app/index.js"
+  },
+  "devDependencies": {
+    "standard": "^17.1.0"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0"
+  }
+}
