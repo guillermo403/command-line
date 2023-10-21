@@ -1,0 +1,11 @@
+import express, { json } from 'express'
+const app = express()
+const PORT = process.env.PORT ?? 3000
+
+export const start = async () => {
+  return new Promise(resolve => {
+    app.use(json())
+
+    app.listen(PORT, () => resolve(PORT))
+  })
+}

@@ -21,6 +21,7 @@ const templatesPath = join(import.meta.url, '..', '..', 'templates').replace('fi
 
 export const getIndexContent = () => fs.readFileSync(`${join(templatesPath, 'index.txt')}`, 'utf8')
 export const getAppContent = () => fs.readFileSync(`${join(templatesPath, 'app.txt')}`, 'utf8')
+export const getServerContent = () => fs.readFileSync(`${join(templatesPath, 'server.txt')}`, 'utf8')
 
 export const eslintrc = {
   extends: 'standard'

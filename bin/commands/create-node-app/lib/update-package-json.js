@@ -5,6 +5,7 @@ export const updatePackageJson = (packageName) => {
   const packageJson = JSON.parse(pj)
   packageJson.name = packageName ?? ''
   packageJson.author = 'Guillermo Merino'
+  packageJson.type = 'module'
   packageJson.scripts = {
     dev: 'node --watch index.js',
     lint: 'standard --fix',

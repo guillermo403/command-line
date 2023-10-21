@@ -1,3 +1,6 @@
+import * as server from './server.js'
+
 export function init () {
-  console.log('Hello world')
+  server.start()
+    .then(port => console.log(`Server running on http://localhost:${port}`))
 }
