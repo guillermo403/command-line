@@ -1,9 +1,9 @@
 import fs from 'node:fs'
 
-export const updatePackageJson = (packageName) => {
+export const updatePackageJson = () => {
   const pj = fs.readFileSync(`${process.cwd()}/package.json`, 'utf8')
   const packageJson = JSON.parse(pj)
-  packageJson.name = packageName ?? ''
+  packageJson.name = globalThis.appConfig.app_name ?? ''
   packageJson.author = 'Guillermo Merino'
   packageJson.type = 'module'
   packageJson.scripts = {

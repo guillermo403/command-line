@@ -5,13 +5,11 @@ import { promisify } from 'node:util'
 import { exec } from 'node:child_process'
 import { join } from 'node:path'
 import { createFolderIfNotExists } from './lib/create-folder.js'
-import { createFileIfNotExist } from './lib/create-file.js'
-import { updatePackageJson } from './lib/update-package-json.js'
-import { clearAllIntervals, createInterval } from './lib/utils/interval.js'
+import { installDependencies } from './lib/install-dependencies.js'
+import { createStructure } from './lib/create-application-structure.js'
+import { clearAllIntervals } from './lib/utils/interval.js'
 import { log } from './lib/utils/log.js'
 import { info, orange, success } from './lib/utils/colors.js'
-import { folders } from './lib/folders.js'
-import { getFiles } from './lib/files.js'
 import boxen from 'boxen'
 import { boxenOptions } from './lib/utils/boxen.js'
 import { askConfig } from './lib/application-config.js'
@@ -21,51 +19,6 @@ const execAsync = promisify(exec)
 
 // Clear the console
 console.clear()
-
-function installDependencies () {
-  return new Promise((resolve, reject) => {
-    log('Installing dependencies')
-    dotsInterval.start()
-
-    const deps = ['standard']
-
-    if (globalThis.appConfig.express) deps.push('express')
-
-    const command = `npm install -D ${deps.join(' ')}`
-    execAsync('npm init -y')
-      .then(() => execAsync(command))
-      .then(() => updatePackageJson())
-      .catch(() => {
-        log('❌ Something gone wrong\n')
-        process.exit(1)
-      })
-      .finally(() => {
-        log(' ✅\n')
-        dotsInterval.stop()
-        resolve()
-      })
-  })
-}
-
-function createStructure () {
-  log('Creating project structure...')
-  dotsInterval.start()
-
-  // Create the folders
-  for (const folder of folders) {
-    createFolderIfNotExists(`${appConfig.rootFolder}/${folder}`)
-  }
-
-  // Create the files
-  for (const file of getFiles()) {
-    createFileIfNotExist(file.path, file.content)
-  }
-
-  log(' ✅\n\n')
-  dotsInterval.stop()
-
-  return Promise.resolve()
-}
 
 // Ask the user for the application configuration
 const appConfig = await askConfig.apply({})
@@ -89,9 +42,6 @@ globalThis.appConfig = appConfig
 
 // Change the current working directory to the project folder
 process.chdir(rootFolder)
-
-// Create a new interval to show dots every 700ms
-const dotsInterval = createInterval()
 
 installDependencies()
   .then(() => createStructure())
