@@ -9,9 +9,9 @@ export function getAppContent (deps) {
   let content = ''
   if (deps.express) {
     content += "import * as server from './server.js'\n"
+    content += '\n'
   }
 
-  content += '\n'
   content += 'export function init () {'
 
   if (deps.express) {

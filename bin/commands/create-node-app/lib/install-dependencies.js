@@ -23,8 +23,6 @@ export function installDependencies (appConfig) {
   const depsCommand = `npm install ${dependencies.join(' ')}`
   const devDepsCommand = `npm install -D ${devDependencies.join(' ')}`
 
-  console.log(depsCommand, devDepsCommand)
-
   return execute(depsCommand)
     .then(() => execute(devDepsCommand))
     .then(() => checkTypescript(appConfig.deps))
