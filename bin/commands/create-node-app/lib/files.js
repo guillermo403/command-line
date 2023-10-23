@@ -1,9 +1,9 @@
 import {
-  eslintrc,
   getAppContent,
   getIndexContent,
   getServerContent,
-  getRoutesContent
+  getRoutesContent,
+  getEslintrc
 } from './config.js'
 
 import { join } from 'node:path'
@@ -15,7 +15,7 @@ export const getFiles = ({ rootDir, name: appName, deps }) => {
     { path: '.gitignore', content: 'node_modules' },
     { path: 'README.md', content: `# ${appName}` },
     { path: join('_test_', 'app.test.js'), content: '' },
-    { path: '.eslintrc.cjs', content: `module.exports = ${JSON.stringify(eslintrc, null, 2)}` }
+    { path: '.eslintrc.cjs', content: `module.exports = ${JSON.stringify(getEslintrc(deps), null, 2)}` }
   ]
 
   if (deps.express) {

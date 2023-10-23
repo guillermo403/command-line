@@ -51,6 +51,14 @@ export function getRoutesContent (deps) {
 
 export const getServerContent = () => fs.readFileSync(`${join(templatesPath, 'server.txt')}`, 'utf8')
 
-export const eslintrc = {
-  extends: 'standard'
+export const getEslintrc = (deps) => {
+  const settings = {
+    extends: 'standard'
+  }
+
+  if (deps.typescript) {
+    settings.project = './tsconfig.json'
+  }
+
+  return settings
 }

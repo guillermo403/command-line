@@ -16,7 +16,7 @@ export const updatePackageJson = (appName, deps) => {
     packageJson.scripts.build = 'tsc'
     packageJson.scripts.start = 'node build/index.js'
     packageJson.scripts.dev = 'tsx --watch index.ts'
-    delete packageJson.scripts.lint
+    packageJson.scripts.lint = 'ts-standard --fix'
   }
 
   fs.writeFileSync(`${process.cwd()}/package.json`, JSON.stringify(packageJson, null, 2))
