@@ -1,25 +1,31 @@
-import { promisify } from 'node:util'
 import { log } from './utils/log.js'
 import { createInterval } from './utils/interval.js'
-import { exec } from 'node:child_process'
 import { updatePackageJson } from './update-package-json.js'
-const execAsync = promisify(exec)
+import { execute } from './utils/execute-command.js'
 
-export function installDependencies () {
+export function installDependencies (appConfig) {
   const dotsInterval = createInterval()
 
   return new Promise((resolve, reject) => {
     log('Installing dependencies')
     dotsInterval.start()
 
-    const deps = ['standard']
+    const userDependencies = Object.entries(appConfig.deps)
+      .filter(([, value]) => Boolean(value))
+      .map(([key]) => key)
 
-    if (globalThis.appConfig.express) deps.push('express')
+    const dependencies = ['standard', ...userDependencies]
+    const devDependencies = Object.entries(appConfig.devDeps)
+      .filter(([, value]) => Boolean(value))
+      .map(([key]) => key)
 
-    const command = `npm install -D ${deps.join(' ')}`
-    execAsync('npm init -y')
-      .then(() => execAsync(command))
-      .then(() => updatePackageJson())
+    const depsCommand = `npm install ${dependencies.join(' ')}`
+    const devDepsCommand = `npm install -D ${devDependencies.join(' ')}`
+
+    execute(depsCommand)
+      .then(() => execute(devDepsCommand))
+      .then(() => checkTypescript(appConfig.deps))
+      .then(() => updatePackageJson(appConfig.name, dependencies))
       .catch(() => {
         log('❌ Something gone wrong\n')
         process.exit(1)
@@ -30,4 +36,10 @@ export function installDependencies () {
         resolve()
       })
   })
+}
+
+function checkTypescript (deps) {
+  return deps.typescript
+    ? execute('npx tsc --init')
+    : Promise.resolve()
 }

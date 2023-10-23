@@ -1,9 +1,9 @@
 import { join } from 'node:path'
 
-export function getFolders () {
+export function getFolders (deps) {
   const folders = ['src', 'lib', '_test_']
 
-  if (globalThis.appConfig.express) {
+  if (deps.express) {
     folders.push(
       join('src', 'routes'),
       join('src', 'controllers')
