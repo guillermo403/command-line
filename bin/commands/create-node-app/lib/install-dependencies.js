@@ -2,31 +2,27 @@ import { log } from './utils/log.js'
 import { createInterval } from './utils/interval.js'
 import { updatePackageJson } from './update-package-json.js'
 import { execute } from './utils/execute-command.js'
+import { checkDependency } from './utils/check-dependency.js'
 
 export function installDependencies (appConfig) {
   const dotsInterval = createInterval()
   log('Installing dependencies')
   dotsInterval.start()
 
-  const userDependencies = Object.entries(appConfig.deps)
-    .filter(([, value]) => Boolean(value))
-    .map(([key]) => key)
+  const dependencies = [...appConfig.deps]
 
-  const dependencies = [...userDependencies]
-  if (appConfig.deps.typescript) dependencies.push(['ts-standard'])
+  // Default dependencies
+  if (checkDependency(dependencies, 'typescript')) dependencies.push(['ts-standard'])
   else dependencies.push(['standard'])
-
-  const devDependencies = Object.entries(appConfig.devDeps)
-    .filter(([, value]) => Boolean(value))
-    .map(([key]) => key)
+  //
 
   const depsCommand = `npm install ${dependencies.join(' ')}`
-  const devDepsCommand = `npm install -D ${devDependencies.join(' ')}`
+  const devDepsCommand = `npm install -D ${appConfig.devDeps.join(' ')}`
 
   return execute(depsCommand)
     .then(() => execute(devDepsCommand))
-    .then(() => checkTypescript(appConfig.deps))
-    .then(() => updatePackageJson(appConfig.name, dependencies))
+    .then(() => initTypescript(appConfig.deps))
+    .then(() => updatePackageJson(appConfig.app_name, dependencies))
     .catch((err) => {
       console.error(err)
       log('❌ Something gone wrong\n')
@@ -38,8 +34,8 @@ export function installDependencies (appConfig) {
     })
 }
 
-function checkTypescript (deps) {
-  return deps.typescript
+function initTypescript (deps) {
+  return checkDependency(deps, 'typescript')
     ? execute('npx tsc --init')
     : Promise.resolve()
 }

@@ -4,9 +4,10 @@ import {
   getServerContent,
   getRoutesContent,
   getEslintrc
-} from './config.js'
+} from './fillFiles.js'
 
 import { join } from 'node:path'
+import { checkDependency } from './utils/check-dependency.js'
 
 export const getFiles = ({ rootDir, name: appName, deps }) => {
   const files = [
@@ -18,14 +19,14 @@ export const getFiles = ({ rootDir, name: appName, deps }) => {
     { path: '.eslintrc.cjs', content: `module.exports = ${JSON.stringify(getEslintrc(deps), null, 2)}` }
   ]
 
-  if (deps.express) {
-    files.push({ path: join('src', 'server.js'), content: getServerContent() })
+  if (checkDependency(deps, 'express')) {
+    files.push({ path: join('src', 'server.js'), content: getServerContent(deps) })
     files.push({ path: join('src', 'routes', 'index.js'), content: getRoutesContent(deps) })
   }
 
   files.map(({ path }) => join(rootDir, path))
 
-  if (deps.typescript) {
+  if (checkDependency(deps, 'typescript')) {
     files
       .filter(({ path }) => path.endsWith('.js'))
       .map((file) => {

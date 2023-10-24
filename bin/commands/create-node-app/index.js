@@ -19,21 +19,18 @@ clearConsole()
   .then(() => getUserConfig())
   .then((config) => {
     appConfig = config
-    createFolderIfNotExists(appConfig.name)
-    appConfig.rootDir = join(process.cwd(), appConfig.name)
+    createFolderIfNotExists(appConfig.app_name)
+    appConfig.rootDir = join(process.cwd(), appConfig.app_name)
     process.chdir(appConfig.rootDir)
     return clearConsole()
   })
   .then(() => initializeApp())
   .then(() => installDependencies(appConfig))
   .then(() => createStructure(appConfig))
-
   .then(() => initializeGit())
   .then(() => {
-    log(orange('Git repository initialized\n\n'))
-
     let message = `${info('To start the application run:\n\n')}`
-    message += ` ${success(`- cd ${appConfig.name}`)}\n`
+    message += ` ${success(`- cd ${appConfig.app_name}`)}\n`
     message += ` ${success('- npm run lint')}\n`
     message += ` ${success('- npm run dev')}`
     log(boxen(message, boxenOptions))
@@ -45,5 +42,12 @@ clearConsole()
   })
 
 function initializeApp () { return execute('npm init -y') }
-function initializeGit () { return execute('git init') }
+function initializeGit () {
+  if (appConfig.git) {
+    return execute('git init')
+      .then(() => log(orange('Git repository initialized\n\n')))
+  }
+
+  return Promise.resolve()
+}
 function clearConsole () { console.clear(); return Promise.resolve() }

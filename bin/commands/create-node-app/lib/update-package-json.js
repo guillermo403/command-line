@@ -1,4 +1,5 @@
 import fs from 'node:fs'
+import { checkDependency } from './utils/check-dependency.js'
 
 export const updatePackageJson = (appName, deps) => {
   const pj = fs.readFileSync(`${process.cwd()}/package.json`, 'utf8')
@@ -12,7 +13,7 @@ export const updatePackageJson = (appName, deps) => {
     test: 'echo "Error: no test specified" && exit 1'
   }
 
-  if (deps.includes('typescript')) {
+  if (checkDependency(deps, 'express')) {
     packageJson.scripts.build = 'tsc'
     packageJson.scripts.start = 'node build/index.js'
     packageJson.scripts.dev = 'tsx --watch index.ts'

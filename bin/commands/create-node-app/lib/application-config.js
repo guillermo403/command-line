@@ -1,34 +1,84 @@
 import readline from 'node:readline/promises'
+import { lightblue } from './utils/colors.js'
 
 // eslint-disable-next-line space-before-function-paren
 export async function getUserConfig() {
-  const { stdin: input, stdout: output } = process
-  const rl = readline.createInterface({ input, output })
+  const questions = [
+    {
+      title: 'app_name',
+      question: `${lightblue('?')} Would you like to name your app? (default: node-app): `,
+      value: 'node-app',
+      type: 'text',
+      map: (value) => value.replace(/\s/g, '-').toLowerCase()
+    },
+    {
+      title: 'express',
+      question: 'Would you like to use express? (y/N): ',
+      value: 'n',
+      dependecies: ['express'],
+      type: 'choose'
+    },
+    {
+      title: 'typescript',
+      question: 'Would you like to use typescript? (y/N): ',
+      value: 'n',
+      dependecies: ['typescript', 'tsx'],
+      devDependecies: ['@types/express'],
+      type: 'choose'
+    },
+    {
+      title: 'git',
+      question: 'Would you like to initialize git? (Y/n): ',
+      value: 'y',
+      type: 'choose'
+    }
+  ]
 
-  const appConfig = { deps: {}, devDeps: {} }
+  await askQuestions(questions)
 
-  // APP NAME
-  const appName = process.argv[2] ?? await rl.question('Project name: ')
-  appConfig.name = appName.trim() !== ''
-    ? appName
-      .trim()
-      .toLowerCase()
-      .replace(/ /g, '-')
-    : 'node-app'
+  const appConfig = { deps: [], devDeps: [] }
 
-  // EXPRESS
-  const express = await rl.question('Would you like to install express? (y/N) ')
-  appConfig.deps.express = !!(express === 'y' || express === 'Y')
+  for (const question of questions) {
+    if (question.type === 'text') appConfig[question.title] = question.value
+    if (question.type === 'choose') appConfig[question.title] = question.value === 'y' || question.value === 'Y'
 
-  // TYPESCRIPT
-  const typescript = await rl.question('Would you like to use typescript? (y/N) ')
-  if (typescript === 'y' || typescript === 'Y') {
-    appConfig.deps.tsx = true
-    appConfig.deps.typescript = true
-    if (appConfig.deps.express) {
-      appConfig.devDeps['@types/express'] = true
+    if (question.dependecies && appConfig[question.title]) {
+      for (const dep of question.dependecies) {
+        appConfig.deps.push(dep)
+      }
+    }
+    if (question.devDependecies && appConfig[question.title]) {
+      for (const dep of question.devDependecies) {
+        appConfig.devDeps.push(dep)
+      }
     }
   }
 
   return Promise.resolve(appConfig)
+}
+
+/**
+ * @param {Array<{ title: string, question: string, value: string, dependecies?: string[], devDependecies?: string[] }>} questions
+ * @returns {Promise<void>}
+ */
+async function askQuestions (questions) {
+  const { stdin: input, stdout: output } = process
+  const rl = readline.createInterface({ input, output })
+
+  const questionsPromises = []
+  for (const question of questions) {
+    questionsPromises.push(await rl.question(question.question))
+  }
+
+  const answers = await Promise.allSettled(questionsPromises)
+
+  for (let i = 0; i < questions.length; i++) {
+    questions[i].value = answers[i].value !== '' ? answers[i].value : questions[i].value
+
+    if (questions[i].map && questions[i].map instanceof Function) {
+      questions[i].value = questions[i].map(answers[i].value)
+    }
+  }
+
+  return Promise.resolve()
 }
