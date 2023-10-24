@@ -36,7 +36,7 @@ export async function getUserConfig() {
 
   await askQuestions(questions)
 
-  const appConfig = { deps: [], devDeps: [] }
+  const appConfig = { dependencies: [], devDependencies: [] }
 
   for (const question of questions) {
     if (question.type === 'text') appConfig[question.title] = question.value
@@ -44,16 +44,17 @@ export async function getUserConfig() {
 
     if (question.dependecies && appConfig[question.title]) {
       for (const dep of question.dependecies) {
-        appConfig.deps.push(dep)
+        appConfig.dependencies.push(dep)
       }
     }
     if (question.devDependecies && appConfig[question.title]) {
       for (const dep of question.devDependecies) {
-        appConfig.devDeps.push(dep)
+        appConfig.devDependencies.push(dep)
       }
     }
   }
 
+  globalThis.appConfig = appConfig
   return Promise.resolve(appConfig)
 }
 

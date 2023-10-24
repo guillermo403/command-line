@@ -1,7 +1,9 @@
 import fs from 'node:fs'
-import { checkDependency } from './utils/check-dependency.js'
+import { hasTypescript } from './utils/has-typescript.js'
 
-export const updatePackageJson = (appName, deps) => {
+export const updatePackageJson = () => {
+  const { app_name: appName } = globalThis.appConfig
+
   const pj = fs.readFileSync(`${process.cwd()}/package.json`, 'utf8')
   const packageJson = JSON.parse(pj)
   packageJson.name = appName ?? ''
@@ -13,7 +15,7 @@ export const updatePackageJson = (appName, deps) => {
     test: 'echo "Error: no test specified" && exit 1'
   }
 
-  if (checkDependency(deps, 'express')) {
+  if (hasTypescript()) {
     packageJson.scripts.build = 'tsc'
     packageJson.scripts.start = 'node build/index.js'
     packageJson.scripts.dev = 'tsx --watch index.ts'

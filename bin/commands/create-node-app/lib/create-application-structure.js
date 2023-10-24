@@ -5,19 +5,21 @@ import { createFolderIfNotExists } from './create-folder.js'
 import { getFiles } from './files.js'
 import { getFolders } from './folders.js'
 
-export function createStructure ({ rootDir, deps, name }) {
+export function createStructure () {
+  const { rootDir } = globalThis.appConfig
+
   const dotsInterval = createInterval()
 
   log('Creating project structure...')
   dotsInterval.start()
 
   // Create the folders
-  for (const folder of getFolders(deps)) {
+  for (const folder of getFolders()) {
     createFolderIfNotExists(`${rootDir}/${folder}`)
   }
 
   // Create the files
-  for (const file of getFiles({ rootDir, deps, name })) {
+  for (const file of getFiles()) {
     createFileIfNotExist(file.path, file.content)
   }
 

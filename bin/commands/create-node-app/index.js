@@ -15,31 +15,38 @@ import { execute } from './lib/utils/execute-command.js'
 
 let appConfig
 
-clearConsole()
-  .then(() => getUserConfig())
-  .then((config) => {
-    appConfig = config
-    createFolderIfNotExists(appConfig.app_name)
-    appConfig.rootDir = join(process.cwd(), appConfig.app_name)
-    process.chdir(appConfig.rootDir)
-    return clearConsole()
-  })
-  .then(() => initializeApp())
-  .then(() => installDependencies(appConfig))
-  .then(() => createStructure(appConfig))
-  .then(() => initializeGit())
-  .then(() => {
-    let message = `${info('To start the application run:\n\n')}`
-    message += ` ${success(`- cd ${appConfig.app_name}`)}\n`
-    message += ` ${success('- npm run lint')}\n`
-    message += ` ${success('- npm run dev')}`
-    log(boxen(message, boxenOptions))
-  })
-  .catch((err) => console.log(err))
-  .finally(() => {
-    clearAllIntervals()
-    process.exit(0)
-  })
+createnodeapp()
+
+function createnodeapp () {
+  clearConsole()
+    .then(() => getUserConfig())
+    .then((config) => {
+      appConfig = config
+      createFolderIfNotExists(appConfig.app_name)
+      appConfig.rootDir = join(process.cwd(), appConfig.app_name)
+      globalThis.appConfig.rootDir = appConfig.rootDir
+      process.chdir(appConfig.rootDir)
+      return clearConsole()
+    })
+    .then(() => initializeApp())
+    .then(() => installDependencies())
+    .then(() => createStructure())
+    .then(() => initializeGit())
+    .then(() => {
+      let message = `${info('To start the application run:\n\n')}`
+      message += ` ${success(`- cd ${appConfig.app_name}`)}\n`
+      message += ` ${success('- npm run lint')}\n`
+      message += ` ${success('- npm run dev')}`
+      log(boxen(message, boxenOptions))
+    })
+    .catch((err) => console.error(err))
+    .finally(() => {
+      clearAllIntervals()
+      process.exit(0)
+    })
+}
+
+export default createnodeapp
 
 function initializeApp () { return execute('npm init -y') }
 function initializeGit () {

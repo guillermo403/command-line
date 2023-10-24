@@ -4,29 +4,32 @@ import {
   getServerContent,
   getRoutesContent,
   getEslintrc
-} from './fillFiles.js'
+} from './templates.js'
 
 import { join } from 'node:path'
 import { checkDependency } from './utils/check-dependency.js'
+import { hasTypescript } from './utils/has-typescript.js'
 
-export const getFiles = ({ rootDir, name: appName, deps }) => {
+export const getFiles = () => {
+  const { rootDir, app_name: appName } = globalThis.appConfig
+
   const files = [
     { path: 'index.js', content: getIndexContent() },
-    { path: join('src', 'app.js'), content: getAppContent(deps) },
+    { path: join('src', 'app.js'), content: getAppContent() },
     { path: '.gitignore', content: 'node_modules' },
     { path: 'README.md', content: `# ${appName}` },
     { path: join('_test_', 'app.test.js'), content: '' },
-    { path: '.eslintrc.cjs', content: `module.exports = ${JSON.stringify(getEslintrc(deps), null, 2)}` }
+    { path: '.eslintrc.cjs', content: `module.exports = ${JSON.stringify(getEslintrc(), null, 2)}` }
   ]
 
-  if (checkDependency(deps, 'express')) {
-    files.push({ path: join('src', 'server.js'), content: getServerContent(deps) })
-    files.push({ path: join('src', 'routes', 'index.js'), content: getRoutesContent(deps) })
+  if (checkDependency('express')) {
+    files.push({ path: join('src', 'server.js'), content: getServerContent() })
+    files.push({ path: join('src', 'routes', 'index.js'), content: getRoutesContent() })
   }
 
   files.map(({ path }) => join(rootDir, path))
 
-  if (checkDependency(deps, 'typescript')) {
+  if (hasTypescript()) {
     files
       .filter(({ path }) => path.endsWith('.js'))
       .map((file) => {

@@ -1,4 +1,5 @@
 import { checkDependency } from './utils/check-dependency.js'
+import { hasTypescript } from './utils/has-typescript.js'
 
 export const getIndexContent = () => {
   let content = ''
@@ -7,15 +8,15 @@ export const getIndexContent = () => {
   return content
 }
 
-export function getAppContent (deps) {
+export function getAppContent () {
   let content = ''
-  if (checkDependency(deps, 'express')) {
+  if (checkDependency('express')) {
     content += "import * as server from './server.js'\n"
     content += '\n'
     content += 'export function init (): void {'
   } else content += 'export function init () {'
 
-  if (checkDependency(deps, 'express')) {
+  if (checkDependency('express')) {
     content += '\n  server.start()'
     // eslint-disable-next-line no-template-curly-in-string
     content += '\n    .then(port => console.log(`Server running on http://localhost:${port}`))'
@@ -26,10 +27,10 @@ export function getAppContent (deps) {
   return content
 }
 
-export function getRoutesContent (deps) {
+export function getRoutesContent () {
   let content = ''
 
-  if (checkDependency(deps, 'typescript')) {
+  if (hasTypescript()) {
     content += "import { Router, Request, Response } from 'express'\n"
   } else {
     content += "import { Router } from 'express'\n"
@@ -39,7 +40,7 @@ export function getRoutesContent (deps) {
   content += 'const router = Router()\n'
   content += '\n'
 
-  if (checkDependency(deps, 'typescript')) {
+  if (hasTypescript()) {
     content += "router.get('/', (req: Request, res: Response) => {\n"
   } else {
     content += "router.get('/', (req, res) => {\n"
@@ -51,15 +52,15 @@ export function getRoutesContent (deps) {
   return content
 }
 
-export const getServerContent = (deps) => {
+export const getServerContent = () => {
   let content = ''
 
   content += "import express, { json } from 'express'\n"
   content += "import router from './routes/index.js'\n"
   content += 'const app = express()\n'
-  content += 'const PORT = process.env.PORT ?? 3000\n'
+  content += 'const PORT = isNaN(Number(process.env.PORT)) ? 3000 : Number(process.env.PORT)\n'
   content += '\n'
-  if (checkDependency(deps, 'typescript')) content += 'export const start = async (): Promise<number> => {\n'
+  if (hasTypescript()) content += 'export const start = async (): Promise<number> => {\n'
   else content += 'export const start = async () => {\n'
   content += '  return new Promise(resolve => {\n'
   content += '    app.use(json())\n'
@@ -72,12 +73,13 @@ export const getServerContent = (deps) => {
   return content
 }
 
-export const getEslintrc = (deps) => {
+export const getEslintrc = () => {
   const settings = {
     extends: 'standard'
   }
 
-  if (checkDependency(deps, 'typescript')) {
+  if (hasTypescript()) {
+    settings.extends = 'node_modules/ts-standard/ts-standard.js'
     settings.project = './tsconfig.json'
   }
 

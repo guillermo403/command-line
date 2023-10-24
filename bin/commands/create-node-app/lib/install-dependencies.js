@@ -2,27 +2,28 @@ import { log } from './utils/log.js'
 import { createInterval } from './utils/interval.js'
 import { updatePackageJson } from './update-package-json.js'
 import { execute } from './utils/execute-command.js'
-import { checkDependency } from './utils/check-dependency.js'
+import { getDependencies } from './utils/get-dependencies.js'
+import { hasTypescript } from './utils/has-typescript.js'
 
-export function installDependencies (appConfig) {
+export function installDependencies () {
   const dotsInterval = createInterval()
   log('Installing dependencies')
   dotsInterval.start()
 
-  const dependencies = [...appConfig.deps]
+  const dependencies = getDependencies()
 
   // Default dependencies
-  if (checkDependency(dependencies, 'typescript')) dependencies.push(['ts-standard'])
+  if (hasTypescript()) dependencies.push(['ts-standard'])
   else dependencies.push(['standard'])
   //
 
   const depsCommand = `npm install ${dependencies.join(' ')}`
-  const devDepsCommand = `npm install -D ${appConfig.devDeps.join(' ')}`
+  const devDepsCommand = `npm install -D ${globalThis.appConfig.devDependencies.join(' ')}`
 
   return execute(depsCommand)
     .then(() => execute(devDepsCommand))
-    .then(() => initTypescript(appConfig.deps))
-    .then(() => updatePackageJson(appConfig.app_name, dependencies))
+    .then(() => initTypescript())
+    .then(() => updatePackageJson())
     .catch((err) => {
       console.error(err)
       log('❌ Something gone wrong\n')
@@ -34,8 +35,8 @@ export function installDependencies (appConfig) {
     })
 }
 
-function initTypescript (deps) {
-  return checkDependency(deps, 'typescript')
+function initTypescript () {
+  return hasTypescript()
     ? execute('npx tsc --init')
     : Promise.resolve()
 }
