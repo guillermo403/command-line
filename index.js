@@ -1,3 +1,1 @@
-import createnodeapp from './bin/commands/create-node-app/index.js'
-
-createnodeapp()
+import './bin/commands/create-node-app/create-node-app.js'

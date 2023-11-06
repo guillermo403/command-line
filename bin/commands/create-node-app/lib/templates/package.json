@@ -1,0 +1,14 @@
+{
+  "name": "%%appName",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "%%executor --watch src/index%%fullext",
+    "start": "node src/index%%fullext"
+  },
+  "keywords": [],
+  "author": "Guillermo Merino",
+  "license": "ISC"
+}

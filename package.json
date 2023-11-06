@@ -11,14 +11,20 @@
   "author": "",
   "license": "ISC",
   "bin": {
-    "createnodeapp": "./bin/commands/create-node-app/index.js"
+    "create-node-app": "./bin/commands/create-node-app/create-node-app.js"
   },
   "devDependencies": {
+    "eslint": "^8.53.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-n": "^16.2.0",
+    "eslint-plugin-promise": "^6.1.1",
     "standard": "^17.1.0"
   },
   "dependencies": {
     "boxen": "^7.1.1",
     "chalk": "^5.3.0",
-    "typescript": "^5.2.2"
+    "inquirer": "^9.2.11",
+    "yargs": "^17.7.2"
   }
 }
