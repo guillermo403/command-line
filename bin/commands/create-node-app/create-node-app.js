@@ -8,7 +8,7 @@ import install from './lib/install-dependencies.js'
 import initializeGit from './lib/utils/initialize-git.js'
 import finishCommand from './lib/utils/finish-command.js'
 
-async function createnodeapp () {
+function createnodeapp () {
   const appConfig = {}
 
   console.clear()

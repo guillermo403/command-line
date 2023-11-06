@@ -1,4 +1,5 @@
 import inquirer from 'inquirer'
+import foldersHelper from '../helpers/folders-helper.js'
 
 export default async function (appConfig) {
   const options = getOptions(appConfig.appName)
@@ -55,6 +56,10 @@ function getOptions (appName) {
       validate (input) {
         if (input.trim() === '') {
           return 'Please enter a valid name for the project'
+        }
+
+        if (foldersHelper.exists(input)) {
+          return 'A folder with the same name already exists and is not empty'
         }
         return true
       }

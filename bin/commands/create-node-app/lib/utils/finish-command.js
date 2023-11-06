@@ -10,7 +10,7 @@ export default function (appConfig) {
   endMessage += '  cd ' + appConfig.appName + '\n'
   endMessage += '  npm run dev'
   endMessage += '\n\n'
-  endMessage += colors.orange('Happy coding!')
+  endMessage += colors.orange('Happy coding!') + ' 🎉'
   const box = boxen(endMessage, {
     margin: 1,
     padding: 1,
