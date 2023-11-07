@@ -1,0 +1,5 @@
+%%tsTypes
+
+export function helloWorld (req%%requestType, res%%responseType) {
+  res.send('Hello World!')
+}

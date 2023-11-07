@@ -10,10 +10,6 @@ export default function (appConfig) {
     devDependencies.push('typescript', '@types/node', 'tsx')
   }
 
-  if (appConfig.eslint) {
-    devDependencies.push('eslint')
-  }
-
   if (appConfig.prettier) {
     devDependencies.push('prettier')
   }

@@ -53,12 +53,12 @@ function getOptions (appName) {
       message: 'Name of the project:',
       default: 'node-app',
       filter: input => input.trim().replace(/\s+/g, '-'),
-      validate (input) {
+      async validate (input) {
         if (input.trim() === '') {
           return 'Please enter a valid name for the project'
         }
 
-        if (foldersHelper.exists(input)) {
+        if (await foldersHelper.exists(input)) {
           return 'A folder with the same name already exists and is not empty'
         }
         return true

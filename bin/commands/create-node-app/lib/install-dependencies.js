@@ -10,8 +10,6 @@ export default async function (appConfig) {
     breakLine: false
   })
 
-  process.chdir(appConfig.appName)
-
   const [dependencies, devDependencies] = getDependencies(appConfig)
 
   await executeCommand(`npm i ${dependencies}`)
