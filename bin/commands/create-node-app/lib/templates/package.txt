@@ -4,10 +4,7 @@
   "description": "",
   "main": "index.js",
   "type": "module",
-  "scripts": {
-    "dev": "%%executor --watch src/index%%fullext",
-    "start": "node src/index%%fullext"%%buildScript
-  },
+  "scripts": %%scripts
   "keywords": [],
   "author": "Guillermo Merino",
   "license": "ISC"

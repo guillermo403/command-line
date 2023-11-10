@@ -20,7 +20,7 @@ function createnodeapp () {
     .then((userAnswers) => Object.assign(appConfig, userAnswers))
     .then(() => foldersHelper.create(appConfig.appName))
     .then(() => process.chdir(appConfig.appName))
-    .then(async () => await scaffoldApp(appConfig))
+    .then(() => scaffoldApp(appConfig))
     .then(() => initializeEslint(appConfig))
     .then(() => install(appConfig))
     .then(() => initializeGit(appConfig))
@@ -29,5 +29,3 @@ function createnodeapp () {
 }
 
 createnodeapp()
-
-// TODO: Corregir los scripts del package.json para typescript

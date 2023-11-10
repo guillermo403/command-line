@@ -84,6 +84,17 @@ export default function (appConfig) {
 }
 
 function getReplacesMap (appConfig) {
+  const packageJsonScripts = appConfig.typescript
+    ? {
+        start: 'node build/src/index.js',
+        dev: 'tsx --watch src/index.ts',
+        build: 'tsc'
+      }
+    : {
+        start: 'node index.js',
+        dev: 'node --watch src/index.js'
+      }
+
   const replacesMap = {
     '*': {
       '%%fullext': appConfig.typescript ? '.ts' : '.js',
@@ -91,8 +102,7 @@ function getReplacesMap (appConfig) {
     },
     package: {
       '%%appName': appConfig.appName,
-      '%%executor': appConfig.typescript ? 'tsx' : 'node',
-      '%%buildScript': appConfig.typescript ? ',\n"build": "tsc"' : ''
+      '%%scripts': JSON.stringify(packageJsonScripts, null, 2) + ','
     },
     controllers: {
       '%%tsTypes': appConfig.typescript ? 'import type { Request, Response } from \'express\'\n\n' : '',
