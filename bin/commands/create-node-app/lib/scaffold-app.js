@@ -6,22 +6,24 @@ import getApplicationFiles from './utils/app-files.js'
 import getApplicationFolders from './utils/app-folders.js'
 
 export default async function (appConfig) {
-  log({
-    text: 'Scaffolding app... ',
+  const loading = log({
+    text: 'Scaffolding app',
     color: colors.info,
-    breakLine: false
+    breakLine: false,
+    loading: true,
+    hideCursor: true
   })
 
   const { create: createFolder } = foldersHelper
   const { create: createFile } = filesHelper
 
   const folders = getApplicationFolders(appConfig)
-  for await (const folder of folders) {
+  for (const folder of folders) {
     await createFolder(folder)
   }
 
   const files = getApplicationFiles(appConfig)
-  for await (const file of files) {
+  for (const file of files) {
     const { path, extension, template, replace, content } = file
     let filePath = `${path}`
     if (extension) filePath += `.${extension}`
@@ -44,5 +46,6 @@ export default async function (appConfig) {
     color: colors.success,
     breakLine: true
   })
+  loading.stop()
   return Promise.resolve({ folders, files })
 }

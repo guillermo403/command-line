@@ -9,6 +9,7 @@ export default function (appConfig) {
   endMessage += '\n'
   endMessage += '  cd ' + appConfig.appName + '\n'
   endMessage += '  npm run dev'
+  if (appConfig.typescript) endMessage += '\n\n' + colors.pink('To build the app, run:') + '\n' + '  npm run build'
   endMessage += '\n\n'
   endMessage += colors.orange('Happy coding!') + ' 🎉'
   const box = boxen(endMessage, {

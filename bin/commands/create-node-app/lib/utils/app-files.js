@@ -98,9 +98,6 @@ function getReplacesMap (appConfig) {
       '%%tsTypes': appConfig.typescript ? 'import type { Request, Response } from \'express\'\n\n' : '',
       '%%requestType': appConfig.typescript ? ': Request' : '',
       '%%responseType': appConfig.typescript ? ': Response' : ''
-    },
-    eslintrc: {
-      '%%ts': appConfig.typescript ? 'with-typescript' : ''
     }
   }
 

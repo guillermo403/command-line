@@ -1,3 +1,3 @@
-%%tsTypesexport function helloWorld (req%%requestType, res%%responseType) {
+%%tsTypesexport function helloWorld (_req%%requestType, res%%responseType) {
   res.send('Hello World!')
 }

@@ -5,15 +5,21 @@ import executeCommand from './execute-command.js'
 export default async function (appConfig) {
   if (!appConfig.git) return
 
-  log({
+  const loading = log({
     text: 'Initializing git repository... ',
     color: colors.info,
-    breakLine: false
+    breakLine: false,
+    loading: true,
+    hideCursor: true
   })
-  await executeCommand('git init')
-  log({
-    text: '[v]',
-    color: colors.success,
-    breakLine: true
-  })
+  return executeCommand({ command: 'git init' })
+    .then(() => {
+      loading.stop()
+      log({
+        text: '[v]',
+        color: colors.success,
+        breakLine: true
+      })
+    })
+    .catch(console.error)
 }
